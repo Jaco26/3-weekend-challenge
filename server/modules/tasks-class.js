@@ -1,8 +1,9 @@
 class Task {
-    constructor(id, category, task, dateAdded, dueDate, completed){
+    constructor(id, category, task, notes, dateAdded, dueDate, completed){
         this.id = id;
         this.category = category;
         this.task = task;
+        this.notes = notes;
         this.dateAdded = new Date(dateAdded).toDateString();
         this.dueDate = dueDate.toDateString();
         if(completed === 'N'){
@@ -18,7 +19,7 @@ class Task {
 function processTasks(rows) {
     let tasksArray = [];
     for (let i = 0; i < rows.length; i++) {
-        let task = new Task(rows[i].id, rows[i].category, rows[i].task, rows[i].date_added, rows[i].due_date, rows[i].completed);
+        let task = new Task(rows[i].id, rows[i].category, rows[i].task, rows[i].notes, rows[i].date_added, rows[i].due_date, rows[i].completed);
         tasksArray.push(task);
     }
     return tasksArray

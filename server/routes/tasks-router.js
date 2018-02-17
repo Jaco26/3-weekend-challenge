@@ -20,9 +20,9 @@ router.post('/add', (req, res) => {
     console.log('message in router.post /add = ', newTask);
     
     const sqlText = `INSERT INTO tasks 
-    (task, category, completed, due_date, date_added)
-    Values($1, $2, $3, $4, NOW())`;
-    pool.query(sqlText, [newTask.task, newTask.category, newTask.completed, newTask.dueDate])
+    (task, category, notes, completed, due_date, date_added)
+    Values($1, $2, $3, $4, $5, NOW())`;
+    pool.query(sqlText, [newTask.task, newTask.category, newTask.notes, newTask.completed, newTask.dueDate])
     .then((result) => {
         res.sendStatus(200);
     }).catch((error) => {

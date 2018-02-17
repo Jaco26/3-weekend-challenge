@@ -21,7 +21,8 @@ function clearTasksInFields() {
     $('#taskIn').val('');
     $('#dueDateIn').val('');
     $('#completedYN').val('');
-    $('#taskCategories').val('')
+    $('#taskCategories').val('');
+    $('#notesIn').val('');
 } // END clearTasksInFields
 
 function packageNewTask(){
@@ -30,6 +31,7 @@ function packageNewTask(){
         dueDate: $('#dueDateIn').val(),
         completed: $('#completedYN').val(),
         category: $('#taskCategories').val(),
+        notes: $('#notesIn').val(),
     };
     return newTask;
 } // END packageNewTask
@@ -89,6 +91,7 @@ function displayTasks(tasks){
         }  else if (!tasks[row].completed){
             $tr.css({'background-color':'#aaaaaa33'})
         }
+        let notesAbrv = tasks[row].notes.slice(0, 20) + '...';
         for (let col = 1; col < keys.length + 1; col++) { // create a column for each key/sql table column and two more for row/task-specific user controls
             let $td = $('<td>'); // create a new table data element for each key/sql table column
             if (col === keys.length - 1) {
@@ -96,7 +99,7 @@ function displayTasks(tasks){
             } else if (col === keys.length) {
                 $td.addClass('task-info-ctl').append($('<button>').addClass('btn delete-btn').data('id', tasks[row].id).text('Delete'));
             } else {
-                $td.addClass('task-info').data('type', keys[col]).text(tasks[row][keys[col]]); // give 
+                $td.addClass('task-info').data('type', keys[col]).text(tasks[row][keys[col]]); // give data('type') equal to column header to all table cells
             }
             $tr.append($td);
         }
@@ -107,7 +110,12 @@ function displayTasks(tasks){
 
 
 
-
+/*
+else if (col === 3) { // NOTES here
+    $td.addClass('task-info').data('type', keys[col]).text(notesAbrv);
+    console.log($td.data('type'));
+}
+*/
 
 
 

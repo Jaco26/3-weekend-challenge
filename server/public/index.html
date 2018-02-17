@@ -7,6 +7,10 @@
     <title>To Do</title>
     <script src="vendors/jquery.min.js"></script>
     <script src="scripts/client.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="styles/style.css"/>
 </head>
@@ -22,6 +26,7 @@
             <thead>
                 <th>Category</th>
                 <th>Task</th>
+                <th>Notes</th>
                 <th>Date added</th>
                 <th>Due date</th>
                 <th>complete</th>
@@ -41,30 +46,40 @@
 <!-- ADD TASK MODAL -->
     <div class="modal" id="add-task-modal">
         <div class="modal-content">
-            <div id="userCreateTask">
-                <input type="text" name="" id="taskIn" placeholder="enter a task">
-                <label for="dueDateIn">Enter a due date</label>
-                <input type="date" name="" id="dueDateIn">
-                <label for="taskCategories">Category</label>
-                <select id="taskCategories">
-                    <option value="" disabled selected>-</option>
-                    <option value="kitchen">kitchen</option>
-                </select>
-                <!--<button id="add-category">Add Category</button>-->
-                <label for="completedYN">is this task already completed?</label>
-                <select id="completedYN">
-                    <option value="" disabled selected>-</option>
-                    <option value="N">No</option>
-                    <option value="Y">Yes</option>
-                </select>
+            <form>
+                <div id="userCreateTask">
+                    <div class="form-group">
+                        <input type="text" name="" id="taskIn" placeholder="enter a task">
+                        <select class="form-control col-3 d-inline" id="taskCategories">
+                            <option value="" disabled selected>Choose a category</option>
+                            <option value="house">House</option>
+                            <option value="school">School</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="dueDateIn">Enter a due date</label>
+                        <input type="date" name="" id="dueDateIn">
+                    </div>
+                   <div class="form-group">
+                        <label for="completedYN">Already done!</label>
+                        <input type="checkbox" name="completedYN" id="completedYN">
+                    </div>
+                  
+                    
+                    <textarea name="notes" id="notesIn" cols="40" rows="5" placeholder="Add some notes..."></textarea>
 
-                <button class="btn-light" id="submitTask">Submit</button>
-            </div>
-            <!-- END #userCreateTask -->
+                    <button class="btn-light" id="submitTask">Submit</button>
+                </div>
+                <!-- END #userCreateTask -->
+            </form>
+            
         </div>
         <!-- END .modal-content -->
     </div>
     <!-- END #add-task-modal -->
 
+
+
+   
 </body>
 </html>
