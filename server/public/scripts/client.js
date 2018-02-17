@@ -1,5 +1,14 @@
 $(document).ready(function() {
     getTasks();
+    $('#trigger-add-task-modal').on('click', function () {
+        $('#add-task-modal').fadeIn();
+    }); // END #trigger-add-task-modal onclick
+    $('body').on('click', function(e){
+        if (e.target.matches('.modal') && !e.target.matches('.modal-content')){
+            $('#add-task-modal').fadeOut();
+        }
+    }); // END body onclick for fadeOut .modal
+ 
     $('#submitTask').on('click', function(){
         validateTask(packageNewTask());
     }); // END #submitTask onclick
@@ -75,17 +84,19 @@ function displayTasks(tasks){
     
     for(let row = 0; row < tasks.length; row++){
         let $tr = $('<tr>'); // make a new table row for each element in "tasks"
-        if(tasks[row].completed){
-            $tr.css('background-color', '#00aa9955');
+        if (tasks[row].completed) {
+            $tr.css({'background-color':'#00aa9955'});
+        }  else if (!tasks[row].completed){
+            $tr.css({'background-color':'#aaaaaa33'})
         }
-        for(let col = 1; col < keys.length + 1; col++) { // create a column for each key/sql table column and two more for row/task-specific user controls
+        for (let col = 1; col < keys.length + 1; col++) { // create a column for each key/sql table column and two more for row/task-specific user controls
             let $td = $('<td>'); // create a new table data element for each key/sql table column
-            if(col === keys.length - 1){
-                $td.append($('<button>').addClass('btn complete-btn').data('id', tasks[row].id).text('Complete'));
-            } else if (col === keys.length){
-                $td.append($('<button>').addClass('btn delete-btn').data('id', tasks[row].id).text('Delete'));
+            if (col === keys.length - 1) {
+                $td.addClass('task-info-ctl').append($('<button>').addClass('btn complete-btn').data('id', tasks[row].id).text('Complete'));
+            } else if (col === keys.length) {
+                $td.addClass('task-info-ctl').append($('<button>').addClass('btn delete-btn').data('id', tasks[row].id).text('Delete'));
             } else {
-                $td.text(tasks[row][keys[col]]);
+                $td.addClass('task-info').data('type', keys[col]).text(tasks[row][keys[col]]); // give 
             }
             $tr.append($td);
         }

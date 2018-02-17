@@ -43,3 +43,7 @@ In no particular order:
 
 *** IDEAS ***
 - Make table row editable by clicking on it --- with click, trigger modal for editing interface
+
+- On load, display table displayig existing tasks
+  - above that, display a navbar with a button to add a task, and controls to configure the table display
+  - clicking the button will load a modal form interface for users to enter new tasks
