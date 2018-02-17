@@ -13,8 +13,6 @@ $(document).ready(function() {
         validateTask(packageNewTask());
     }); // END #submitTask onclick
     
-    //$('#add-category').on('click', showAddCategoryModal) // END #taskCategories onchange if add-category
-    //$('#submitNewCategory').on('click', addCategoryToDropdown);
 }); // END document.ready
 
 function clearTasksInFields() {
