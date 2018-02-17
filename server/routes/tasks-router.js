@@ -3,13 +3,13 @@ const express = require('express');
 const router = express.Router();
 const bodyParser = require('body-parser');
 const pool = require('../modules/pool'); // This is how I talk to the database
+const Task = require('../modules/tasks-class'); // This is my Task class
 
-//router.use(bodyParser.urlencoded({extended:true}));
 
 router.get('/get-all', function(req, res) {
     const sqlText = `SELECT * FROM tasks ORDER BY id DESC`;
     pool.query(sqlText).then((result) => {
-        res.send(result);
+        res.send(Task.processTasks(result.rows));
     }).catch((error) => {
         console.log('error in router.get /get-all:', error);        
     });
@@ -32,3 +32,4 @@ router.post('/add', (req, res) => {
 
 
 module.exports = router;
+
