@@ -41,4 +41,5 @@ In no particular order:
 - Add any additional features that you think would be useful or interesting
 
 
-
+*** IDEAS ***
+- make a way for a user to add a new category of task/table to the database

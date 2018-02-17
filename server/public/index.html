@@ -12,32 +12,50 @@
 </head>
 <body>
 
-<div class="container">
-    <div id="userCreateTask">
-        <input type="text" name="" id="taskIn" placeholder="enter a task">
-        <label for="dueDateIn">Enter a due date</label>
-        <input type="date" name="" id="dueDateIn">
-        <label for="completedYN">is this task already completed?</label>
-        <select id="completedYN">
-            <option value="no">no</option>
-            <option value="yes">yes</option>
-        </select>
-        <button class="btn-light" id="submitTask">Submit</button>
+    <div class="container">
+        <div id="userCreateTask">
+            <input type="text" name="" id="taskIn" placeholder="enter a task">
+            <label for="dueDateIn">Enter a due date</label>
+            <input type="date" name="" id="dueDateIn">
+            <label for="taskCategories">Category</label>
+            <select id="taskCategories">
+                <option value="" disabled selected>-</option>
+                <option value="kitchen">kitchen</option>
+            
+            </select>
+            <!--<button id="add-category">Add Category</button>-->
+            <label for="completedYN">is this task already completed?</label>
+            <select id="completedYN">
+                <!--<option value="" disabled selected>-</option>-->
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+            
+            <button class="btn-light" id="submitTask">Submit</button>
+        </div>
+        <table class="table">
+            <thead>
+                <th>task</th>
+                <th>due date</th>
+                <th>complete</th>
+                <th>delete</th>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
     </div>
-    <table class="table">
-        <thead>
-            <th>task</th>
-            <th>due date</th>
-            <th>complete</th>
-            <th>delete</th>
-        </thead>
-        <tbody>
 
-        </tbody>
-    </table>
-</div>
-
-   
+    
+<!-- MODAL MODAL MODAL -->
+    <div class="modal">
+        <div class="modal-content">
+            <label for="addCategory">Add a category</label>
+            <input id="newCategoryIn" type="text">
+            <button id="submitNewCategory" class="btn btn-primary">Submit</button>
+            <button id="closeNewCategoryModal" class="btn btn-light">Cancel</button>
+        </div>
+    </div>
 
 </body>
 </html>
