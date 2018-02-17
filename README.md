@@ -42,4 +42,4 @@ In no particular order:
 
 
 *** IDEAS ***
-- make a way for a user to add a new category of task/table to the database
+- Make table row editable by clicking on it --- with click, trigger modal for editing interface

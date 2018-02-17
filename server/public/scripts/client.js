@@ -1,6 +1,8 @@
 $(document).ready(function() {
     getTasks();
-    $('#submitTask').on('click', packageNewTask);
+    $('#submitTask').on('click', function(){
+        validateTask(packageNewTask());
+    }); // END #submitTask onclick
     
     //$('#add-category').on('click', showAddCategoryModal) // END #taskCategories onchange if add-category
     //$('#submitNewCategory').on('click', addCategoryToDropdown);
@@ -20,24 +22,26 @@ function packageNewTask(){
         completed: $('#completedYN').val(),
         category: $('#taskCategories').val(),
     };
-    let isValid = 0;
+    return newTask;
+} // END packageNewTask
+
+function validateTask(newTask){
+    let isValid = true;
     let keys = Object.keys(newTask);
-    for(let i = 0; i < keys.length; i ++){
-        if(newTask[keys[i]].length === 0){
-           isValid += 1
+    for (let i = 0; i < keys.length; i++) {
+        if (newTask[keys[i]] === null || newTask[keys[i]].length === 0) {
+            isValid = false;
+            alert('NO')
+            break;
         }
     }
-    if(isValid > 0){
-        alert('NO')
-    } else {
+    if (isValid) {
         sendTask(newTask);
-        clearTasksInFields()   
+        clearTasksInFields()
     }
-} // END #submitTask onclick
+} // END validateTask
 
 function sendTask(taskObj){
-    console.log(taskObj);
-    
     $.ajax({
         type: 'POST',
         url: '/tasks/add',
@@ -47,8 +51,7 @@ function sendTask(taskObj){
         getTasks()
     }).fail( (error) => {
         console.log(error);
-    }); // END ajax /tasks/add POST
-        
+    }); // END ajax /tasks/add POST      
 } // END sendTask
 
 function getTasks(){
@@ -68,25 +71,26 @@ function displayTasks(tasks){
     let $tbody = $('#tasks-display'); // tbody = the table body to append to
     $tbody.empty();
     let keys = Object.keys(tasks[0]); // get array of a task object's property keys (presumably all objects will have the same keys so I only need to do this once)
+    console.log(keys);
+    
     for(let row = 0; row < tasks.length; row++){
         let $tr = $('<tr>'); // make a new table row for each element in "tasks"
         if(tasks[row].completed){
             $tr.css('background-color', '#00aa9955');
         }
-        for(let col = 0; col < keys.length + 1; col++) { // create a column for each key/sql table column and two more for row/task-specific user controls
+        for(let col = 1; col < keys.length + 1; col++) { // create a column for each key/sql table column and two more for row/task-specific user controls
             let $td = $('<td>'); // create a new table data element for each key/sql table column
-
-            if(col === keys.length -1){
+            if(col === keys.length - 1){
                 $td.append($('<button>').addClass('btn complete-btn').data('id', tasks[row].id).text('Complete'));
             } else if (col === keys.length){
                 $td.append($('<button>').addClass('btn delete-btn').data('id', tasks[row].id).text('Delete'));
+            } else {
+                $td.text(tasks[row][keys[col]]);
             }
             $tr.append($td);
         }
         $tbody.append($tr);
     }
-    
-
 } // END displayTasks
 
 
