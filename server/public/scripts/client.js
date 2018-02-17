@@ -9,7 +9,8 @@ $(document).ready(function() {
 function clearTasksInFields() {
     $('#taskIn').val('');
     $('#dueDateIn').val('');
-    $('#completedYN').val('No');
+    $('#completedYN').val('');
+    $('#taskCategories').val('')
 } // END clearTasksInFields
 
 function packageNewTask(){
@@ -65,10 +66,11 @@ function getTasks(){
 function displayTasks(tasks){
     // "tasks" = an array of task objects
     let $tbody = $('#tasks-display'); // tbody = the table body to append to
+    $tbody.empty();
     let keys = Object.keys(tasks[0]); // get array of a task object's property keys (presumably all objects will have the same keys so I only need to do this once)
     for(let row = 0; row < tasks.length; row++){
         let $tr = $('<tr>'); // make a new table row for each element in "tasks"
-        if(tasks[row].completed === 'Y'){
+        if(tasks[row].completed){
             $tr.css('background-color', '#00aa9955');
         }
         for(let col = 0; col < keys.length + 1; col++) { // create a column for each key/sql table column and two more for row/task-specific user controls
@@ -108,15 +110,3 @@ function displayTasks(tasks){
 
 
 
-
-/*
-function showAddCategoryModal(){
-    $('.modal').fadeIn();
-}; // END showAddCategoryModal
-
-function addCategoryToDropdown(){
-    let newCategory = $('#newCategoryIn').val()
-    $('#taskCategories').append($('<option>').val(newCategory).text(newCategory));
-    $('.modal').fadeOut();
-}; // END addCategoryToDropdown
-*/
