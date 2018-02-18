@@ -12,7 +12,7 @@ Here are the specific components for the challenge:
 
 - Create a front end experience that allows a user to create a task.    ----DONE
 - When the task is created, it should be stored inside of a database (SQL). ----DONE
-- Whenever a task is created the front end should refresh to show all tasks that need to be completed. 
+- Whenever a task is created the front end should refresh to show all tasks that need to be completed.  ----DONE
 - Each task should have an option to 'Complete' or 'Delete'.
 - When a task is complete:
     - its visual representation should change on the front end (for example,  the background of the task container could change from grey to green,   as well as the complete option 'checked off').

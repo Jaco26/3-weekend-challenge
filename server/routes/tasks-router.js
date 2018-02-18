@@ -6,8 +6,9 @@ const pool = require('../modules/pool'); // This is how I talk to the database
 const Task = require('../modules/tasks-class'); // This is my Task class
 
 
+
 router.get('/get-all', function(req, res) {
-    const sqlText = `SELECT * FROM tasks ORDER BY id DESC`;
+    const sqlText = ` SELECT DATE_PART('day', due_date::timestamp - 'NOW()'::timestamp), * FROM tasks ORDER BY due_date ASC`;
     pool.query(sqlText).then((result) => {
         res.send(Task.processTasks(result.rows));
     }).catch((error) => {
@@ -29,6 +30,17 @@ router.post('/add', (req, res) => {
         console.log('error in router.post /add:', error);
     });
 }); // END router /add POST
+
+router.delete('/delete/:id', (req, res) => {
+    let taskId = req.params.id;
+    let sqlText = `DELETE FROM tasks WHERE id=$1`
+    pool.query(sqlText, [taskId]).then((response) => {
+        res.sendStatus(200);
+    }).catch((error) => {
+        console.log(error);
+        res.sendStatus()
+    }); // END pool.query et. al.
+}); // END router /delete/:id DELETE
 
 
 module.exports = router;
