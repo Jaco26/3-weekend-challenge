@@ -19,11 +19,10 @@ router.get('/get-all', function(req, res) {
 router.post('/add', (req, res) => {
     const newTask = req.body;
     console.log('message in router.post /add = ', newTask);
-    
     const sqlText = `INSERT INTO tasks 
     (task, category, notes, completed, due_date, date_added)
     Values($1, $2, $3, $4, $5, NOW())`;
-    pool.query(sqlText, [newTask.task, newTask.category, newTask.notes, newTask.completed, newTask.dueDate])
+    pool.query(sqlText, [newTask.task, newTask.category, newTask.notes, false, newTask.dueDate])
     .then((result) => {
         res.sendStatus(200);
     }).catch((error) => {
@@ -38,9 +37,20 @@ router.delete('/delete/:id', (req, res) => {
         res.sendStatus(200);
     }).catch((error) => {
         console.log(error);
-        res.sendStatus()
+        res.sendStatus('BAD NEWS BUD')
     }); // END pool.query et. al.
 }); // END router /delete/:id DELETE
+
+router.put('/complete/:id', (req, res) => {
+    let taskCompleted = req.params.id;
+    let newStatus = req.body.newStatus;
+    let sqlText = `UPDATE tasks SET completed=$1 WHERE id=$2`;
+    pool.query(sqlText, [newStatus, taskCompleted]).then((response) => {
+        res.sendStatus(200);
+    }).catch((error) => {
+        console.log(error);
+    }); // END pool.query
+}); // END router complete/:id PUT
 
 
 module.exports = router;

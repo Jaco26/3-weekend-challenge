@@ -23,6 +23,10 @@ $(document).ready(function() {
         $('#cancel-delete').on('click', fadeOutModals)
     }); // END .delete-btn onclick
 
+    $('#tasks-display').on('click', '.complete-btn', function(){
+        let id = $(this).data('id');
+        completeTask(id);
+    }); // END .complete-btn onclick
 
     
 }); // END document.ready
@@ -44,13 +48,10 @@ function packageNewTask(){
     let newTask = {
         task: $('#taskIn').val(),
         dueDate: $('#dueDateIn').val(),
-        completed: $('#completedYN').val(),
+        //completed: $('#completedYN').val(),
         category: $('#taskCategories').val(),
         notes: $('#notesIn').val(),
     };
-    console.log($('#completedYN').val());
-    
-
     return newTask;
 } // END packageNewTask
 
@@ -96,6 +97,19 @@ function getTasks(){
     }); // END ajax tasks/get-all GET
 } // END getTasks
 
+function completeTask(id){
+    $.ajax({
+        type: 'PUT',
+        url: `/tasks/complete/${id}`,
+        data: {newStatus: true},
+    }).done((response) => {
+        console.log(response);
+        getTasks()
+    }).fail((error) => {
+        console.log(error);
+    });
+} // END completeTask
+
 function deleteTask(taskId){
     console.log(taskId);
     $.ajax({
@@ -118,10 +132,10 @@ function displayTasks(tasks){
 
     for(let row = 0; row < tasks.length; row++){
         let $tr = $('<tr>'); // make a new table row for each element in "tasks"
-        if (tasks[row].completed) {
-            $tr.css({'background-color':'#00aa9955'});
-        }  else if (!tasks[row].completed){
-            $tr.css({'background-color':'#aaaaaa33'})
+        if (tasks[row].completed === true) {
+            $tr.css({ 'background-color': 'green' });
+        } else if (tasks[row].completed === false) {
+            $tr.css({ 'background-color': 'red', 'color': 'white' })
         } 
         let notesAbrv = tasks[row].notes.slice(0, 20) + '...';
         for (let col = 1; col < keys.length + 1; col++) { // create a column for each key/sql table column and two more for row/task-specific user controls
@@ -138,16 +152,6 @@ function displayTasks(tasks){
         $tbody.append($tr);
     }
 } // END displayTasks
-
-
-var date = new Date();
-var now = date.toLocaleString();
-
-
-console.log(now);
-
-
-
 
 
 

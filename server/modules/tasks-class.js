@@ -7,10 +7,10 @@ class Task {
         this.dateAdded = new Date(dateAdded).toDateString();
         this.dueDate = dueDate.toDateString();
         this.daysRemaining = daysRemaining;
-        if(completed === 'N'){
-            this.completed = false;
-        } else {
+        if(completed === 'true'){
             this.completed = true;
+        } else {
+            this.completed = false;
         }
     } // END constructor
     

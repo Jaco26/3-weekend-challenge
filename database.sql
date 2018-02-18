@@ -4,7 +4,7 @@ CREATE TABLE tasks
 	task VARCHAR(120),
 	category VARCHAR(40),
 	notes VARCHAR(240),
-	completed VARCHAR(2),
+	completed VARCHAR(5),
 	due_date DATE,
 	date_added DATE
 );
