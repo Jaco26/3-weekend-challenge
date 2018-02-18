@@ -4,8 +4,8 @@ class Task {
         this.category = category;
         this.task = task;
         this.notes = notes;
-        this.dateAdded = new Date(dateAdded).toDateString();
-        this.dueDate = dueDate.toDateString();
+        this.dateAdded = new Date(dateAdded).toString();
+        this.dueDate = dueDate.toString();
         this.daysRemaining = daysRemaining;
         if(completed === 'true'){
             this.completed = true;
@@ -14,12 +14,16 @@ class Task {
         }
     } // END constructor
     
+
 }; // END Task
 
 function processTasks(rows) {
     let tasksArray = [];
     for (let i = 0; i < rows.length; i++) {
         let task = new Task(rows[i].id, rows[i].category, rows[i].task, rows[i].notes, rows[i].date_added, rows[i].due_date, rows[i].date_part, rows[i].completed);
+        let d = new Date();
+        task.dateAdded = task.dateAdded.slice(3, 15);
+        task.dueDate = task.dueDate.slice(3, 15);
         tasksArray.push(task);
     }
     return tasksArray

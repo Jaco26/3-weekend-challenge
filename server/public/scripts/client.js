@@ -145,30 +145,6 @@ function deleteTask(taskId){
     });
 } // END deleteTask
 
-function prepareForEdit(row, id) {
-    let category = $(`#${row} .category`).text();
-    let task = $(`#${row} .task`).text();
-    let notes = $(`#${row} .notes`).text();
-    let dueDate = $(`#${row} .dueDate`).val();
-    $('.modal-content-c').empty().append($('<label for="editCategory">Edit category</label>').append($('<select>').attr({ 'id': 'editCategory' }).val(category)
-        .append($('<option value="" disabled selected>Choose a category</option>'),
-            $('<option value="house">House</option>'),
-            $('<option value="school">School</option>'))));
-    $('.modal-content-c').append($('<label for="editTask">Edit task</label><input type="text" id="editTask">').val(task));
-    $('.modal-content-c').append($('<label for="editDueDate">Edit due date</label><input type="date" id="editDueDate">'));
-    $('.modal-content-c').append($('<label for="editNotes">Edit notes</label><textarea id="editNotes" cols="40" rows="5"></textarea>').val(notes));
-    $('.modal-content-c').append($('<button>').addClass('btn btn-primary submitEdit').text('Submit').data('id', id), $('<button>').addClass('btn btn-light cancelEdit').text('Cancel'));
-} // END prepareForEdit()
-
-function updateTask(id){
-    let update = {
-        task: $('#editTask').val(),
-        dueDate: $('#editDueDate').val(),
-        category: $('#editCategory').val(),
-        notes: $('#editNotes').val(),
-    };
-    validateEdit(update, id);
-} // END updateTask
 
 function displayTasks(tasks){
     // "tasks" = an array of task objects
@@ -176,6 +152,9 @@ function displayTasks(tasks){
     $tbody.empty();
     let keys = Object.keys(tasks[0]); // get array of a task object's property keys (presumably all objects will have the same keys so I only need to do this once)
     for(let row = 0; row < tasks.length; row++){
+        tasks[row].dueDate = formatDate(tasks[row].dueDate);
+        tasks[row].dateAdded = formatDate(tasks[row].dateAdded);
+
         let $tr = $('<tr>').data('id', tasks[row].id).attr('id', `tr${row+1}`); // make a new table row for each element in "tasks"
         for (let col = 1; col < keys.length + 1; col++) { // create a column for each key/sql table column and two more for row/task-specific user controls
             let $td = $('<td>'); // create a new table data element for each key/sql table column
@@ -205,6 +184,70 @@ function displayTasks(tasks){
 } // END displayTasks
 
 
+function formatDate(string){
+    // string will look something like "Feb 18 2018"
+    let month;
+    let mo = string.slice(1, 4);
+    if (mo === 'Jan'){
+        month = '01';
+    } else if (mo === 'Feb') {
+        month = '02';
+    } else if (mo === 'Mar') {
+        month = '03';
+    } else if (mo === 'Apr') {
+        month = '04';
+    } else if (mo === 'May') {
+        month = '05';
+    } else if (mo === 'Jun') {
+        month = '06';
+    } else if (mo === 'Jul') {
+        month = '07';
+    } else if (mo === 'Aug') {
+        month = '08';
+    } else if (mo === 'Sep') {
+        month = '09';
+    } else if (mo === 'Oct') {
+        month = '10';
+    } else if (mo === 'Nov') {
+        month = '11';
+    } else if (mo === 'Dec') {
+        month = '12';
+    }
+    console.log(month);
+    
+    return [string.slice(7, 12), '-', month, '-', string.slice(5, 7)].join('');
+}
+
+
+function prepareForEdit(row, id) {
+    let category = $(`#${row} .category`).text();
+    let task = $(`#${row} .task`).text();
+    let notes = $(`#${row} .notes`).text();
+    let dueDate = $(`#${row} .dueDate`).text();
+    console.log(dueDate);
+    
+    $('.modal-content-c').empty().append($('<label for="editCategory">Edit category</label>').append($('<select>').attr({ 'id': 'editCategory' }).val(category)
+        .append($('<option value="" disabled selected>Choose a category</option>'),
+            $('<option value="house">House</option>'),
+            $('<option value="school">School</option>'))));
+    $('.modal-content-c').append($('<label for="editTask">Edit task</label><input type="text" id="editTask">').val(task));
+    $('.modal-content-c').append($('<label for="editDueDate">Edit due date</label><input type="date" id="editDueDate">'));
+    $('.modal-content-c').append($('<label for="editNotes">Edit notes</label><textarea id="editNotes" cols="40" rows="5"></textarea>').val(notes));
+    $('.modal-content-c').append($('<button>').addClass('btn btn-primary submitEdit').text('Submit').data('id', id), $('<button>').addClass('btn btn-light cancelEdit').text('Cancel'));
+} // END prepareForEdit()
+
+
+
+
+function updateTask(id) {
+    let update = {
+        task: $('#editTask').val(),
+        dueDate: $('#editDueDate').val(),
+        category: $('#editCategory').val(),
+        notes: $('#editNotes').val(),
+    };
+    validateEdit(update, id);
+} // END updateTask
 
 
 function validateEdit(editedTask, id){
@@ -230,7 +273,7 @@ function validateEdit(editedTask, id){
             console.log(error);
         });
     }; // END
-}
+}; // END validateEdit
 
 
 
