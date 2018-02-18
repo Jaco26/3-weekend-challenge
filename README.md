@@ -13,12 +13,12 @@ Here are the specific components for the challenge:
 - Create a front end experience that allows a user to create a task.    ----DONE
 - When the task is created, it should be stored inside of a database (SQL). ----DONE
 - Whenever a task is created the front end should refresh to show all tasks that need to be completed.  ----DONE
-- Each task should have an option to 'Complete' or 'Delete'.
-- When a task is complete:
+- Each task should have an option to 'Complete' or 'Delete'. --- DONE
+- When a task is complete: --- DONE
     - its visual representation should change on the front end (for example,  the background of the task container could change from grey to green,   as well as the complete option 'checked off').
     - Each of these are accomplished in CSS, but will need to hook into logic to know whether or not a task is complete.
-- Whether or not a task is complete should also be stored in the database.
-- Deleting a task should remove it both from the Front End as well as the Database.
+- Whether or not a task is complete should also be stored in the database. --- DONE
+- Deleting a task should remove it both from the Front End as well as the Database.  ---DONE
 
 Make sure that you also show us your best styling chops. Explore icons, fonts, libraries. Really work your CSS muscles.
 
@@ -30,7 +30,7 @@ Additionally, PLEASE INCLUDE SOME WAY TO RECREATE YOUR INITIAL DATABASE SCHEMA. 
 *** HARD MODE ***
 
 - Create a table of categories and allow Tasks to be assigned a single (1) category. This creates a one-to-many relationship (many tasks can have one category). You will need to add in joins in order to display and use this new data!
-- In whatever fashion you would like, create an 'are you sure: yes/no' option when deleting a task.
+- In whatever fashion you would like, create an 'are you sure: yes/no' option when deleting a task. --- DONE
 
 *** PRO MODE *** 
 In no particular order:

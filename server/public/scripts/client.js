@@ -28,7 +28,30 @@ $(document).ready(function() {
         completeTask(id);
     }); // END .complete-btn onclick
 
-    
+    $('#tasks-display').on('mouseenter', 'tr', function(e){
+        if(!e.target.matches('.task-info-ctl'))
+        $(this).children('.task-info').fadeTo(100, 0.8).css({ 'cursor': 'pointer'});
+    });
+
+    $('#tasks-display').on('mouseleave', 'tr', function () {
+        $(this).children().fadeTo('fast', 1).css({'font-weight': 'normal' });
+    });
+
+    $('#tasks-display').on('click', 'tr', function (e) {
+        if (!e.target.matches('.task-info-ctl') && !e.target.matches('.delete-btn') && !e.target.matches('.complete-btn') ){
+            let tableRow = $(this).attr('id');
+            let taskId = $(this).data('id');
+            $('#edit-task-modal').fadeIn();
+            prepareForEdit(tableRow, taskId)
+        }
+    });
+
+    $('.modal-content-c').on('click', '.submitEdit', function(){
+        let id = $(this).data('id');
+        updateTask(id);
+        fadeOutModals();
+    });
+
 }); // END document.ready
 
 function fadeOutModals(){
@@ -48,7 +71,6 @@ function packageNewTask(){
     let newTask = {
         task: $('#taskIn').val(),
         dueDate: $('#dueDateIn').val(),
-        //completed: $('#completedYN').val(),
         category: $('#taskCategories').val(),
         notes: $('#notesIn').val(),
     };
@@ -123,21 +145,38 @@ function deleteTask(taskId){
     });
 } // END deleteTask
 
+function prepareForEdit(row, id) {
+    let category = $(`#${row} .category`).text();
+    let task = $(`#${row} .task`).text();
+    let notes = $(`#${row} .notes`).text();
+    let dueDate = $(`#${row} .dueDate`).val();
+    $('.modal-content-c').empty().append($('<label for="editCategory">Edit category</label>').append($('<select>').attr({ 'id': 'editCategory' }).val(category)
+        .append($('<option value="" disabled selected>Choose a category</option>'),
+            $('<option value="house">House</option>'),
+            $('<option value="school">School</option>'))));
+    $('.modal-content-c').append($('<label for="editTask">Edit task</label><input type="text" id="editTask">').val(task));
+    $('.modal-content-c').append($('<label for="editDueDate">Edit due date</label><input type="date" id="editDueDate">'));
+    $('.modal-content-c').append($('<label for="editNotes">Edit notes</label><textarea id="editNotes" cols="40" rows="5"></textarea>').val(notes));
+    $('.modal-content-c').append($('<button>').addClass('btn btn-primary submitEdit').text('Submit').data('id', id), $('<button>').addClass('btn btn-light cancelEdit').text('Cancel'));
+} // END prepareForEdit()
+
+function updateTask(id){
+    let update = {
+        task: $('#editTask').val(),
+        dueDate: $('#editDueDate').val(),
+        category: $('#editCategory').val(),
+        notes: $('#editNotes').val(),
+    };
+    validateEdit(update, id);
+} // END updateTask
+
 function displayTasks(tasks){
     // "tasks" = an array of task objects
     let $tbody = $('#tasks-display'); // tbody = the table body to append to
     $tbody.empty();
     let keys = Object.keys(tasks[0]); // get array of a task object's property keys (presumably all objects will have the same keys so I only need to do this once)
-    console.log(keys);
-
     for(let row = 0; row < tasks.length; row++){
-        let $tr = $('<tr>'); // make a new table row for each element in "tasks"
-        if (tasks[row].completed === true) {
-            $tr.css({ 'background-color': 'green' });
-        } else if (tasks[row].completed === false) {
-            $tr.css({ 'background-color': 'red', 'color': 'white' })
-        } 
-        let notesAbrv = tasks[row].notes.slice(0, 20) + '...';
+        let $tr = $('<tr>').data('id', tasks[row].id).attr('id', `tr${row+1}`); // make a new table row for each element in "tasks"
         for (let col = 1; col < keys.length + 1; col++) { // create a column for each key/sql table column and two more for row/task-specific user controls
             let $td = $('<td>'); // create a new table data element for each key/sql table column
             if (col === keys.length - 1) {
@@ -145,10 +184,22 @@ function displayTasks(tasks){
             } else if (col === keys.length) {
                 $td.addClass('task-info-ctl').append($('<button>').addClass('btn delete-btn').data('id', tasks[row].id).text('Delete'));
             } else {
-                $td.addClass('task-info').data('type', keys[col]).text(tasks[row][keys[col]]); // give data('type') equal to column header to all table cells
+                $td.addClass('task-info').addClass(keys[col]).text(tasks[row][keys[col]]); // give data('type') equal to column header to all table cells
             }
             $tr.append($td);
+        } 
+        if (tasks[row].completed === false && tasks[row].daysRemaining < 2) {
+            $tr.children('.task-info').addClass('due-soon');
+        } 
+        if (tasks[row].completed === false && tasks[row].daysRemaining < 0){
+            $tr.children('.task-info').addClass('overdue');
         }
+        if (tasks[row].completed === true) {
+            $tr.children('.task-info').addClass('completed');
+        } else if (tasks[row].completed === false) {
+            $tr.children('.task-info').addClass('not-completed')
+        } 
+        $tr.children('.task-info-ctl').css('background-color', '#33333333');
         $tbody.append($tr);
     }
 } // END displayTasks
@@ -156,6 +207,30 @@ function displayTasks(tasks){
 
 
 
+function validateEdit(editedTask, id){
+    let isValid = true;
+    let keys = Object.keys(editedTask);
+    keys.pop('notes');
+    for (let i = 0; i < keys.length; i++) {
+        if (editedTask[keys[i]] === null || editedTask[keys[i]].length === 0) {
+            isValid = false;
+            alert('NO')
+            break;
+        }
+    } 
+    if(isValid){
+        $.ajax({
+            type: 'PUT',
+            url: `/tasks/edit/${id}`,
+            data: editedTask,
+        }).done((response) => {
+            console.log(response);
+            getTasks();
+        }).fail((error) => {
+            console.log(error);
+        });
+    }; // END
+}
 
 
 
