@@ -30,7 +30,7 @@ router.post('/add', (req, res) => {
     }); // END pool.query
     const secondSqlText = `INSERT INTO ${newTask.category} (task, notes, completed, due_date, date_added)
     VALUES ($1, $2, $3, $4, NOW())`;
-    pool.query(secondSqlText, [newTask.task, newTask.notes, false, newTask.dueDate])
+    pool.query(secondSqlText, [newTask.task,  newTask.notes, false, newTask.dueDate])
     .then((result) => {
         res.sendStatus(200);
     }).catch((error) => {
