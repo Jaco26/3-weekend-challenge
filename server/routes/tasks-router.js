@@ -43,20 +43,30 @@ router.delete('/delete/:id', (req, res) => {
 
 router.put('/complete/:id', (req, res) => {
     let taskCompleted = req.params.id;
-    let newStatus = req.body.newStatus;
+    let completedStatus = req.body.completed;
     let sqlText = `UPDATE tasks SET completed=$1 WHERE id=$2`;
-    pool.query(sqlText, [newStatus, taskCompleted]).then((response) => {
+    pool.query(sqlText, [completedStatus, taskCompleted]).then((response) => {
         res.sendStatus(200);
     }).catch((error) => {
         console.log('error on complete/:id:', error);
     }); // END pool.query
-}); // END router complete/:id PUT
+}); // END router /complete/:id PUT
+
+router.put('/re-open/:id', (req, res) => {
+    let taskReopened = req.params.id;
+    let completedStatus = req.body.complete;
+    let sqlText = `UPDATE tasks SET completed=$1 WHERE id=$2`;
+    pool.query(sqlText, [completedStatus, taskReopened])
+    .then((response) => {
+        res.sendStatus(200);
+    }).catch((error) => {
+        console.log(error); 
+    }); // END pool.query
+}); // END router /re-open/:id PUT
 
 router.put('/edit/:id', (req, res) => {
     let taskId = req.params.id;
     let update = req.body;
-    console.log(update.notes);
-    
     let sqlText = `UPDATE tasks SET task=$1, category=$2, notes=$3, due_date=$4 WHERE id=$5`;
     pool.query(sqlText, [update.task, update.category, update.notes, update.dueDate, taskId])
     .then((response) => {
@@ -64,7 +74,7 @@ router.put('/edit/:id', (req, res) => {
     }).catch((error) => {
         console.log('error on edit/:id:', error);
     }); // END pool.query
-}); // END router edit/:id PUT
+}); // END router /edit/:id PUT
 
 
 module.exports = router;

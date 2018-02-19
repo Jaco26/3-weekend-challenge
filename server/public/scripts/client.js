@@ -28,45 +28,41 @@ $(document).ready(function() {
         completeTask(id);
     }); // END .complete-btn onclick
 
+    $('#tasks-display').on('click', '.redo-btn', function(){
+        const taskId = $(this).data('id');
+        reOpenTask(taskId)
+    }); // END .redo-btn onclick
+
     $('#tasks-display').on('mouseenter', 'tr', function(e){
         if(!e.target.matches('.task-info-ctl'))
         $(this).children('.task-info').fadeTo(100, 0.8).css({ 'cursor': 'pointer'});
-    });
+    }); // END tr mouseenter
 
     $('#tasks-display').on('mouseleave', 'tr', function () {
         $(this).children().fadeTo('fast', 1).css({'font-weight': 'normal' });
-    });
+    }); // END tr mouseleave
 
     $('#tasks-display').on('click', 'tr', function (e) {
-        if (!e.target.matches('.task-info-ctl') && !e.target.matches('.delete-btn') && !e.target.matches('.complete-btn') ){
+        if (!e.target.matches('.task-info-ctl') && !e.target.matches('.delete-btn') && !e.target.matches('.complete-btn') && !e.target.matches('.redo-btn')){
             let tableRow = $(this).attr('id');
             let taskId = $(this).data('id');
             $('#edit-task-modal').fadeIn();
             prepareForEdit(tableRow, taskId)
         }
-    });
+    }); // END tr onclick
 
     $('.modal-content-c').on('click', '.submitEdit', function(){
         let id = $(this).data('id');
         updateTask(id);
         fadeOutModals();
-    });
+    }); // END .submitEdit onclick
 
 }); // END document.ready
 
-function fadeOutModals(){
-    $('#add-task-modal').fadeOut();
-    $('#delete-confirm-modal').fadeOut();
-}
 
-function clearTasksInFields() {
-    $('#taskIn').val('');
-    $('#dueDateIn').val('');
-    $('#completedYN').val('');
-    $('#taskCategories').val('');
-    $('#notesIn').val('');
-} // END clearTasksInFields
-
+// =========== ============ ================ =============
+// THESE FUNCTIONS DEAL WITH PACKING DATA TO BE SENT
+// =========== ============ ================ =============
 function packageNewTask(){
     let newTask = {
         task: $('#taskIn').val(),
@@ -94,6 +90,10 @@ function validateTask(newTask){
     }
 } // END validateTask
 
+
+// =========== ============ ================ =============
+// THESE FUNCTIONS DEAL WITH AJAX
+// =========== ============ ================ =============
 function sendTask(taskObj){
     $.ajax({
         type: 'POST',
@@ -105,7 +105,7 @@ function sendTask(taskObj){
     }).fail( (error) => {
         console.log(error);
     }); // END ajax /tasks/add POST      
-} // END sendTask
+} // END sendTask POST
 
 function getTasks(){
     $.ajax({
@@ -117,20 +117,20 @@ function getTasks(){
     }).fail( (error) => {
         console.log(error); 
     }); // END ajax tasks/get-all GET
-} // END getTasks
+} // END getTasks GET
 
 function completeTask(id){
     $.ajax({
         type: 'PUT',
         url: `/tasks/complete/${id}`,
-        data: {newStatus: true},
+        data: {completed: true},
     }).done((response) => {
         console.log(response);
         getTasks()
     }).fail((error) => {
         console.log(error);
     });
-} // END completeTask
+} // END completeTask PUT
 
 function deleteTask(taskId){
     console.log(taskId);
@@ -143,9 +143,25 @@ function deleteTask(taskId){
     }).fail((error) => {
         console.log(error);
     });
-} // END deleteTask
+} // END deleteTask DELETE
+
+function reOpenTask(id){
+    $.ajax({
+        type: 'PUT',
+        url: `/tasks/re-open/${id}`,
+        data: {completed: false},
+    }).done((response) => {
+        console.log(response);
+        getTasks();
+    }).fail((error) => {
+        console.log(error);
+    });
+}; // END reOpenTask PUT
 
 
+// =========== ============ ================ =============
+// THEES FUNCTIONS DEAL WITH DOM DISPLAY
+// =========== ============ ================ =============
 function displayTasks(tasks){
     // "tasks" = an array of task objects
     let $tbody = $('#tasks-display'); // tbody = the table body to append to
@@ -158,7 +174,11 @@ function displayTasks(tasks){
         for (let col = 1; col < keys.length + 1; col++) { // create a column for each key/sql table column and two more for row/task-specific user controls
             let $td = $('<td>'); // create a new table data element for each key/sql table column
             if (col === keys.length - 1) {
-                $td.addClass('task-info-ctl').append($('<button>').addClass('btn complete-btn').data('id', tasks[row].id).text('Complete'));
+                if(tasks[row].completed === true){
+                    $td.addClass('task-info-ctl').append($('<button>').addClass('btn redo-btn').data('id', tasks[row].id).text('Re-do'));
+                } else {
+                    $td.addClass('task-info-ctl').append($('<button>').addClass('btn complete-btn').data('id', tasks[row].id).text('Complete'));
+                }
             } else if (col === keys.length) {
                 $td.addClass('task-info-ctl').append($('<button>').addClass('btn delete-btn').data('id', tasks[row].id).text('Delete'));
             } else {
@@ -182,7 +202,25 @@ function displayTasks(tasks){
     }
 } // END displayTasks
 
+function clearTasksInFields() {
+    $('#taskIn').val('');
+    $('#dueDateIn').val('');
+    $('#completedYN').val('');
+    $('#taskCategories').val('');
+    $('#notesIn').val('');
+} // END clearTasksInFields
 
+function fadeOutModals() {
+    $('#add-task-modal').fadeOut();
+    $('#delete-confirm-modal').fadeOut();
+    $('#edit-task-modal').fadeOut();
+}
+
+
+
+// =========== ============ ================ =============
+// THESE FUNCTIONS DEAL WITH EDITING TASKS ONCE ON THE DOM
+// =========== ============ ================ =============
 function formatDate(string){
     // string will look something like "Feb 18 2018"
     let month;
@@ -213,16 +251,13 @@ function formatDate(string){
         month = '12';
     }
     return [string.slice(8, 12), '-', month, '-', string.slice(5, 7)].join('');
-}
-
+} // END formatDate
 
 function prepareForEdit(row, id) {
     let category = $(`#${row} .category`).text();
     let task = $(`#${row} .task`).text();
     let notes = $(`#${row} .notes`).text();
     let dueDate = $(`#${row} .dueDate`).text();
-    console.log(dueDate);
-    
     $('.modal-content-c').empty().append($('<label for="editCategory">Edit category</label>').append($('<select>').attr({ 'id': 'editCategory' }).val(category)
         .append($('<option value="" disabled selected>Choose a category</option>'),
             $('<option value="house">House</option>'),
@@ -233,9 +268,6 @@ function prepareForEdit(row, id) {
     $('.modal-content-c').append($('<button>').addClass('btn btn-primary submitEdit').text('Submit').data('id', id), $('<button>').addClass('btn btn-light cancelEdit').text('Cancel'));
 } // END prepareForEdit()
 
-//document.getElementById("myDate").value = "2014-02-09";
-
-
 function updateTask(id) {
     let update = {
         task: $('#editTask').val(),
@@ -245,7 +277,6 @@ function updateTask(id) {
     };
     validateEdit(update, id);
 } // END updateTask
-
 
 function validateEdit(editedTask, id){
     let isValid = true;
