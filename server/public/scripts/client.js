@@ -2,6 +2,7 @@ $(document).ready(function() {
     getTasks();
     $('#trigger-add-task-modal').on('click', function () {
         $('#add-task-modal').fadeIn();
+        $('#cancel-submit').on('click', fadeOutModals);
     }); // END #trigger-add-task-modal onclick
     $('body').on('click', function(e){
         if (e.target.matches('.modal') && !e.target.matches('.modal-content')){
@@ -11,6 +12,7 @@ $(document).ready(function() {
  
     $('#submitTask').on('click', function(){
         validateTask(packageNewTask());
+        fadeOutModals();
     }); // END #submitTask onclick
 
     $('#tasks-display').on('click', '.delete-btn', function(){
@@ -48,6 +50,7 @@ $(document).ready(function() {
             let taskId = $(this).data('id');
             $('#edit-task-modal').fadeIn();
             prepareForEdit(tableRow, taskId)
+            $('.cancelEdit').on('click', fadeOutModals);
         }
     }); // END tr onclick
 
@@ -56,6 +59,8 @@ $(document).ready(function() {
         updateTask(id);
         fadeOutModals();
     }); // END .submitEdit onclick
+
+   
 
 }); // END document.ready
 
@@ -177,7 +182,7 @@ function displayTasks(tasks){
                 if(tasks[row].completed === true){
                     $td.addClass('task-info-ctl').append($('<button>').addClass('btn redo-btn').data('id', tasks[row].id).text('Re-do'));
                 } else {
-                    $td.addClass('task-info-ctl').append($('<button>').addClass('btn complete-btn').data('id', tasks[row].id).text('Complete'));
+                    $td.addClass('task-info-ctl').append($('<button>').addClass('btn complete-btn').data('id', tasks[row].id).text('Finish'));
                 }
             } else if (col === keys.length) {
                 $td.addClass('task-info-ctl').append($('<button>').addClass('btn delete-btn').data('id', tasks[row].id).text('Delete'));
@@ -255,16 +260,18 @@ function formatDate(string){
 
 function prepareForEdit(row, id) {
     let category = $(`#${row} .category`).text();
+    console.log(category);
+    
     let task = $(`#${row} .task`).text();
     let notes = $(`#${row} .notes`).text();
     let dueDate = $(`#${row} .dueDate`).text();
     $('.modal-content-c').empty().append($('<label for="editCategory">Edit category</label>').append($('<select>').attr({ 'id': 'editCategory' }).val(category)
-        .append($('<option value="" disabled selected>Choose a category</option>'),
-            $('<option value="house">House</option>'),
-            $('<option value="school">School</option>'))));
+        .append($('<option value="'+category+'" selected>'+category+'</option>'),
+            $('<option value="house">house</option>'),
+            $('<option value="school">school</option>'))));
     $('.modal-content-c').append($('<label for="editTask">Edit task</label><input type="text" id="editTask">').val(task));
     $('.modal-content-c').append(('<label for="editDueDate">Edit due date</label><input type="date" id="editDueDate" value="'+dueDate+'">'));
-    $('.modal-content-c').append(('<label for="editNotes">Edit notes</label><textarea id="editNotes" cols="40" rows="5" value="'+notes+'"></textarea>'));
+    $('.modal-content-c').append(('<label for="editNotes">Edit notes</label><textarea id="editNotes" cols="40" rows="5">'+notes+'</textarea>'));
     $('.modal-content-c').append($('<button>').addClass('btn btn-primary submitEdit').text('Submit').data('id', id), $('<button>').addClass('btn btn-light cancelEdit').text('Cancel'));
 } // END prepareForEdit()
 

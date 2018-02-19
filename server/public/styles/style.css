@@ -1,6 +1,7 @@
 
 thead {
     background-color: #5c92cfef;
+    color: antiquewhite;
 }
 
 
@@ -22,12 +23,12 @@ thead {
 
 
 .delete-btn {
-    background-color: #00000069;
+    background-color: #b800009d;
     color: floralwhite;
 }
 
 .complete-btn {
-    background-color: darkseagreen;
+    background-color: rgba(0, 0, 0, 0.411);
     color: floralwhite;
 }
 

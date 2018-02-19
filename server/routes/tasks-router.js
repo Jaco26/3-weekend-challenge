@@ -28,6 +28,14 @@ router.post('/add', (req, res) => {
     }).catch((error) => {
         console.log('error in router.post /add:', error);
     }); // END pool.query
+    const secondSqlText = `INSERT INTO ${newTask.category} (task, notes, completed, due_date, date_added)
+    VALUES ($1, $2, $3, $4, NOW())`;
+    pool.query(secondSqlText, [newTask.task, newTask.notes, false, newTask.dueDate])
+    .then((result) => {
+        res.sendStatus(200);
+    }).catch((error) => {
+        console.log(error);
+    }) // END pool.query
 }); // END router /add POST
 
 router.delete('/delete/:id', (req, res) => {
@@ -54,7 +62,7 @@ router.put('/complete/:id', (req, res) => {
 
 router.put('/re-open/:id', (req, res) => {
     let taskReopened = req.params.id;
-    let completedStatus = req.body.complete;
+    let completedStatus = req.body.completed;
     let sqlText = `UPDATE tasks SET completed=$1 WHERE id=$2`;
     pool.query(sqlText, [completedStatus, taskReopened])
     .then((response) => {
