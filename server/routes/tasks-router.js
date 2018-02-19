@@ -8,7 +8,7 @@ const Task = require('../modules/tasks-class'); // This is my Task class
 
 
 router.get('/get-all', function(req, res) {
-    const sqlText = ` SELECT DATE_PART('days', due_date::timestamp - 'NOW()'::timestamp), * FROM tasks ORDER BY due_date ASC`;
+    const sqlText = ` SELECT DATE_PART('days', due_date::timestamp - 'NOW()'::timestamp), * FROM tasks ORDER BY date_part DESC`;
     pool.query(sqlText).then((result) => {
         res.send(Task.processTasks(result.rows));
     }).catch((error) => {

@@ -60,8 +60,6 @@ $(document).ready(function() {
         fadeOutModals();
     }); // END .submitEdit onclick
 
-   
-
 }); // END document.ready
 
 
@@ -222,9 +220,8 @@ function fadeOutModals() {
 }
 
 
-
 // =========== ============ ================ =============
-// THESE FUNCTIONS DEAL WITH EDITING TASKS ONCE ON THE DOM
+// THESE FUNCTIONS DEAL WITH EDITING TASKS ON THE DOM
 // =========== ============ ================ =============
 function formatDate(string){
     // string will look something like "Feb 18 2018"

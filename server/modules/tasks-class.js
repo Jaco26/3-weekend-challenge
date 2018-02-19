@@ -9,7 +9,7 @@ class Task {
         this.daysRemaining = daysRemaining;
         if(completed === 'true'){
             this.completed = true;
-        } else {
+        } else if (completed === 'false'){
             this.completed = false;
         }
     } // END constructor
@@ -24,7 +24,12 @@ function processTasks(rows) {
         let d = new Date();
         task.dateAdded = task.dateAdded.slice(3, 15);
         task.dueDate = task.dueDate.slice(3, 15);
-        tasksArray.push(task);
+        if(task.completed){
+            tasksArray.push(task);
+        } else {
+            tasksArray.unshift(task);
+        }
+        
     }
     return tasksArray
 }
